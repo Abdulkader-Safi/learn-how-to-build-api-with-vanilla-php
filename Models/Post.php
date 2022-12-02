@@ -24,6 +24,7 @@ class Post
   // Get Posts
   public function read()
   {
+    // Select query
     $query = "SELECT 
                 c.name as category_name,
                 p.id,
@@ -51,6 +52,7 @@ class Post
   // Get Post by ID
   public function read_single()
   {
+    // Select query Where ID
     $query = "SELECT 
                 c.name as category_name,
                 p.id,
@@ -126,7 +128,7 @@ class Post
   // Update Posts
   public function update()
   {
-    // Create query
+    // Update query
     $query = "UPDATE 
                   " . $this->table . "
                 SET 
@@ -152,6 +154,35 @@ class Post
     $stmt->bindParam(":body", $this->body);
     $stmt->bindParam(":author", $this->author);
     $stmt->bindParam(":category_id", $this->category_id);
+    $stmt->bindParam(":id", $this->id);
+
+    // Execute query
+    if ($stmt->execute()) {
+      return true;
+    }
+
+    printf("Error: %s.\n", $stmt->error);
+
+    return false;
+  }
+
+  // Delete Post
+  public function delete()
+  {
+    // Delete Query
+    $query = "DELETE 
+              FROM 
+                " . $this->table . "
+              WHERE 
+                id = :id";
+
+    // Prepare statement
+    $stmt = $this->conn->prepare($query);
+
+    // Clean data
+    $this->id = htmlspecialchars(strip_tags($this->id));
+
+    // Bind data
     $stmt->bindParam(":id", $this->id);
 
     // Execute query
